@@ -11,14 +11,13 @@ subdiv = cv2.Subdiv2D (rect)
 
 # points on the inside
 
-for i in range (0, 100):                                  # selects 100 random points on the image
-    randx = rd.randint (0, width)
+for i in range (0, 250):
     randy = rd.randint (0, height)
     subdiv.insert ((randx, randy))
 
 # edge points
 
-for i in range (0, 10):                                   # selects 10 random points on each side
+for i in range (0, 15):                                   
     subdiv.insert ((0, rd.randint(0, height)))
     subdiv.insert ((rd.randint(0, width), 0))
     subdiv.insert ((width-1, rd.randint(0, height)))
