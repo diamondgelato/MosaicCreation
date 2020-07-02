@@ -15,7 +15,7 @@ def choose_file():
     img = cv2.imread(filepath)
     cv2.namedWindow('Image',cv2.WINDOW_NORMAL)
     
-    cv2.imshow('Image', img_resize)
+    cv2.imshow('Image', img)
     
     
 def showtext():
