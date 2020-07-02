@@ -10,10 +10,11 @@ import os
 
 def choose_file():
 
-    global filepath, img_resize
+    global filepath, img
     filepath = filedialog.askopenfilename(initialdir = 'E:\\',title = 'Select an Image',filetypes = (('JPG','*.jpg'),('All files','*.*')))
     img = cv2.imread(filepath)
-    img_resize = cv2.resize(img,(500,500))
+    cv2.namedWindow('Image',cv2.WINDOW_NORMAL)
+    
     cv2.imshow('Image', img_resize)
     
     
