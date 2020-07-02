@@ -15,7 +15,7 @@ def choose_file():
     img = cv2.imread(filepath)
     img_resize = cv2.resize(img,(500,500))
     cv2.imshow('Image', img_resize)
-    cv2.waitKey(0) 
+    
     
 def showtext():
     content = "Welcome To Photo-Mosaic!!!!!!!!! \nCreate custom photo mosaics with\nthe #1 Photo Mosaic App!\nThis App analyzes the colors and\nshapes of your pictures in a\nmatter of seconds to create your\npersonalized photo mosaic right\nbefore your eyes."
