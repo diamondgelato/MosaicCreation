@@ -12,6 +12,7 @@ subdiv = cv2.Subdiv2D (rect)
 # points on the inside
 
 for i in range (0, 250):
+    randx = rd.randint (0, width)
     randy = rd.randint (0, height)
     subdiv.insert ((randx, randy))
 
