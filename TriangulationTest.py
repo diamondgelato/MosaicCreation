@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import random as rd
 
-def getTriangles(img):
+def getTriangles(img, insidePt, edgePt):
 
     # orig = np.copy (img)
     width = img.shape[1]
@@ -12,14 +12,14 @@ def getTriangles(img):
 
     # points on the inside
 
-    for i in range(0, 250):
+    for i in range(0, insidePt):
         randx = rd.randint(0, width)
         randy = rd.randint(0, height)
         subdiv.insert((randx, randy))
 
     # edge points
 
-    for i in range(0, 15):
+    for i in range(0, edgePt):
         subdiv.insert((0, rd.randint(0, height)))
         subdiv.insert((rd.randint(0, width), 0))
         subdiv.insert((width-1, rd.randint(0, height)))
