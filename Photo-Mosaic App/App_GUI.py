@@ -12,7 +12,7 @@ def choose_file():
     img = cv2.imread(filepath)
     cv2.namedWindow('frame',cv2.WINDOW_NORMAL)
     cv2.imshow('frame', img)
-    cv2.waitKey(0) 
+     
 
 def create_mosaic():
     
