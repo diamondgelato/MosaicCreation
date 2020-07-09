@@ -3,8 +3,12 @@ import numpy as np
 import random as rd
 import TriangulationTest as TT
 
+# to get controlled number of pieces, get total pieces and merge a lot of them mission accomplished
+# for a range of no of pieces have preset number of points (and the ranges are HUGE)
+# then reduce the number to required by merging to the required number (ejjy (maybe))
 
-def drawPoly(pic, drawPoints, matchPoints):
+
+def drawPoly(pic, drawPoints, matchPoints, lineWt):
     for Pt in drawPoints:
         counter = 0
 
@@ -15,22 +19,40 @@ def drawPoly(pic, drawPoints, matchPoints):
 
         # draws the lines of the merged shape
         if counter == 2:
-            pic = cv2.line(pic, Pt, matchPoints[0], (0, 0, 0), 7)
-            pic = cv2.line(pic, Pt, matchPoints[1], (0, 0, 0), 7)
+            pic = cv2.line(pic, Pt, matchPoints[0], (0, 0, 0), lineWt)
+            pic = cv2.line(pic, Pt, matchPoints[1], (0, 0, 0), lineWt)
 
 
-def getMosaicPieces(pic, noOfMergedTri):
+def getMosaicPieces(pic, noOfInsidePoints, noOfEdgePoints, noOfPieces, lineWt):
     trianglesMerged = []
-    triangles = TT.getTriangles(pic, 250, 15)
+    noOfTri, triangles = TT.getTriangles(pic, noOfInsidePoints, noOfEdgePoints)
     length = triangles.shape[0]
+    merged = 0
 
-    # number of triangles to be merged (make it variable later pls)
-    for i in range(0, noOfMergedTri):
-        randIndex = rd.randint(0, length)
+    if noOfPieces == 0: 
+        # for random number of triengles joined
+        noOfMergedTri = int ((1/3) * noOfTri)
+    elif noOfPieces == -1:
+        # for no triangles joined
+        noOfMergedTri = 0
+    elif noOfPieces > 0:
+        # for getting to required number of pieces
+        noOfMergedTri = (noOfTri - noOfPieces)
 
-        for t in trianglesMerged:
-            if t == randIndex:
-                randIndex = rd.randint(0, length-1)
+    # number of triangles to be merged
+    while merged < noOfMergedTri:
+        # for i in range(0, noOfMergedTri):
+        while True:
+            isRepeat = 0
+            randIndex = rd.randint(0, length-1)
+
+            for t in trianglesMerged:
+                if t == randIndex:
+                    # randIndex = rd.randint(0, length-1)
+                    isRepeat = 1
+            
+            if (isRepeat == 0):
+                break
 
         randTri = triangles[randIndex]
         ogPts = [(randTri[0], randTri[1]),
@@ -61,8 +83,9 @@ def getMosaicPieces(pic, noOfMergedTri):
                 matchedTriangles += 1
 
                 # draw the merged shape
-                drawPoly(pic, checkPts, matchedPoints)
-                drawPoly(pic, ogPts, matchedPoints)
+                drawPoly(pic, checkPts, matchedPoints, lineWt)
+                drawPoly(pic, ogPts, matchedPoints, lineWt)
+                merged += 1
 
     # Drawing the triangles
 
@@ -79,8 +102,8 @@ def getMosaicPieces(pic, noOfMergedTri):
             pt2 = (t[2], t[3])
             pt3 = (t[4], t[5])
 
-            pic = cv2.line(pic, pt1, pt2, (0, 0, 0), 7)
-            pic = cv2.line(pic, pt2, pt3, (0, 0, 0), 7)
-            pic = cv2.line(pic, pt1, pt3, (0, 0, 0), 7)
+            pic = cv2.line(pic, pt1, pt2, (0, 0, 0), lineWt)
+            pic = cv2.line(pic, pt2, pt3, (0, 0, 0), lineWt)
+            pic = cv2.line(pic, pt1, pt3, (0, 0, 0), lineWt)
 
-    return pic
+    return (noOfTri, pic)

@@ -13,17 +13,17 @@ def getTriangles(img, insidePt, edgePt):
     # points on the inside
 
     for i in range(0, insidePt):
-        randx = rd.randint(0, width)
-        randy = rd.randint(0, height)
+        randx = rd.randint(0, width-1)
+        randy = rd.randint(0, height-1)
         subdiv.insert((randx, randy))
 
     # edge points
 
     for i in range(0, edgePt):
-        subdiv.insert((0, rd.randint(0, height)))
-        subdiv.insert((rd.randint(0, width), 0))
-        subdiv.insert((width-1, rd.randint(0, height)))
-        subdiv.insert((rd.randint(0, width), height-1))
+        subdiv.insert((0, rd.randint(0, height-1)))
+        subdiv.insert((rd.randint(0, width-1), 0))
+        subdiv.insert((width-1, rd.randint(0, height-1)))
+        subdiv.insert((rd.randint(0, width-1), height-1))
 
     # corners
 
@@ -33,6 +33,7 @@ def getTriangles(img, insidePt, edgePt):
     subdiv.insert((width-1, height-1))
 
     triangleList = subdiv.getTriangleList()
+    noPieces = triangleList.shape[0]
 
-    return triangleList
+    return (noPieces, triangleList)
 
