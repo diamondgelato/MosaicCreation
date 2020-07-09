@@ -16,6 +16,17 @@ def choose_file():
 
 def create_mosaic():
     
+    def manual_click():
+        top_new = Toplevel()
+        entry = Entry(top_new, width = 40, borderwidth = 5)
+        entry.pack()
+        entry.insert(1,"Enter Number Of Pieces")
+
+        def enter():
+            print(entry.get())
+        enter_btn = tk.Button(top_new,text = 'Enter',fg = 'purple',padx = 10,pady = 5,font=('Bauhaus 93',10),command = enter)
+        enter_btn.pack()
+
     top = Toplevel()
 
     canvas_new = tk.Canvas(top,height = 600,width = 600,bg = '#d71b3b') 
@@ -27,7 +38,8 @@ def create_mosaic():
     frame_new = tk.Frame(top,bg = '#e8d71e')
     frame_new.place(relx = 0.2,rely = 0.1,relwidth =0.6,relheight =0.6)
 
-    Mosaic_btn_manual = tk.Button(frame_new,text = 'Create The Mosaic Manually?',fg = 'navy',padx = 10,font=('Bauhaus 93',14),pady = 5)
+
+    Mosaic_btn_manual = tk.Button(frame_new,text = 'Create The Mosaic Manually?',fg = 'navy',padx = 10,font=('Bauhaus 93',14),pady = 5, command = manual_click)
     Mosaic_btn_manual.place(x = 42, y = 100)
 
     Mosaic_btn_auto = tk.Button(frame_new,text = 'Create The Mosaic Automatically?',fg = 'navy',padx = 10,font=('Bauhaus 93',14),pady = 5)
