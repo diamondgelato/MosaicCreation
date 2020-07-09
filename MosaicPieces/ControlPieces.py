@@ -2,16 +2,20 @@ import cv2
 import numpy as np
 import MergeAdjacentTriangles as MAT
 
+
 def getMosaic(pic, noOfPieces):
+
     # decide lineWt based on dimensions
-    dim = max (pic.shape[0], pic.shape[1])
-    lineWt = int (1.5 * (dim/1000))
+    dim = max(pic.shape[0], pic.shape[1])
+    lineWt = int(1.5 * (dim/1000))
 
     if lineWt == 0:
         lineWt = 1
 
     # set number of points according to number of pieces input
-    noOfPieces = int (noOfPieces)
+    defaultInsidePts = 600
+    defaultEdgePts = 20
+    noOfPieces = int(noOfPieces)
 
     Map = ((10, 13, 3, 2),
            (13, 15, 5, 2),
@@ -35,9 +39,13 @@ def getMosaic(pic, noOfPieces):
            (1000, 1250, 700, 20),
            (1250, 1500, 800, 20),)
 
-    for a in Map:
-        if noOfPieces > a[0] and noOfPieces <= a[1]:
-            mosaic = MAT.getMosaicPieces (pic, a[2], a[3], noOfPieces, lineWt) [1]
+    if noOfPieces == 0:
+        mosaic = MAT.getMosaicPieces(
+            pic, defaultInsidePts, defaultEdgePts, noOfPieces, lineWt)[1]
+    else:
+        for a in Map:
+            if noOfPieces > a[0] and noOfPieces <= a[1]:
+                mosaic = MAT.getMosaicPieces(
+                    pic, a[2], a[3], noOfPieces, lineWt)[1]
 
     return mosaic
-    
