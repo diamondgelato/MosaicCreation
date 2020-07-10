@@ -3,10 +3,6 @@ import numpy as np
 import random as rd
 import TriangulationTest as TT
 
-# to get controlled number of pieces, get total pieces and merge a lot of them mission accomplished
-# for a range of no of pieces have preset number of points (and the ranges are HUGE)
-# then reduce the number to required by merging to the required number (ejjy (maybe))
-
 
 def drawPoly(pic, drawPoints, matchPoints, lineWt):
     for Pt in drawPoints:
@@ -41,14 +37,12 @@ def getMosaicPieces(pic, noOfInsidePoints, noOfEdgePoints, noOfPieces, lineWt):
 
     # number of triangles to be merged
     while merged < noOfMergedTri:
-        # for i in range(0, noOfMergedTri):
         while True:
             isRepeat = 0
             randIndex = rd.randint(0, length-1)
 
             for t in trianglesMerged:
                 if t == randIndex:
-                    # randIndex = rd.randint(0, length-1)
                     isRepeat = 1
             
             if (isRepeat == 0):
