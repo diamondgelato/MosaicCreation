@@ -84,9 +84,8 @@ def filter_ocean():
     im_color1 = cv2.applyColorMap(im_gray,cv2.COLORMAP_OCEAN)
     cv2.namedWindow('Ocean',cv2.WINDOW_NORMAL)
     cv2.imshow('Ocean',im_color1)
-    
-
-  
+ 
+   
 def showtext():
     content = "Welcome To Photo-Mosaic!!!!!!!!! \nCreate custom photo mosaics with\nthe #1 Photo Mosaic App!\nThis App analyzes the colors and\nshapes of your pictures in a\nmatter of seconds to create your\npersonalized photo mosaic right\nbefore your eyes."
     textbox = tk.Frame(frame,bg = 'green')
@@ -103,8 +102,6 @@ def save():
 
 def exit_app():
     root.quit()
-
-
 
 root = tk.Tk()
 
@@ -129,6 +126,7 @@ openfile.place(relx = 0.06 , rely = 0.8)
 Mosaic_btn = tk.Button(canvas,text = '   Create Mosaic  ',fg = '#6f2da8',padx = 10,font=('Bauhaus 93',14),pady = 5, command = create_mosaic)
 Mosaic_btn.place(relx = 0.39, rely = 0.8)
 
+
 TakePhoto_btn = tk.Button(canvas,text = 'Take A Photo',fg = '#0b6623',padx = 10,pady = 5,font=('Bauhaus 93',14))
 TakePhoto_btn.place(relx = 0.76, rely = 0.8)
 
@@ -149,6 +147,7 @@ filter_ocean.place(relx = 0.56, rely = 0.9)
 
 filter_negative = tk.Button(frame,text = 'Negative',fg = 'lime',padx = 10,pady = 5,font=('Bauhaus 93',10), command = filter_hsv)
 filter_negative.place(relx = 0.79, rely = 0.9)
+
 
 exit_btn = tk.Button(canvas,text = 'Close (X)',fg = 'red',padx = 10,pady = 5,font=('Bauhaus 93',12), command = exit_app)
 exit_btn.place(relx = 0.83,rely = 0.063)
