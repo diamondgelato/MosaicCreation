@@ -11,6 +11,9 @@ sys.path.append('MosaicPieces')
 import ControlPieces as CT
 #used to save image
 my_image=np.zeros((),np.uint8)
+mosaicPieces=np.zeros((),np.uint8)
+pic=np.zeros((),np.uint8)
+
 
 # used to browse a file from the folder
 def choose_file():
@@ -29,7 +32,7 @@ def webcam():
     while True:
         ret,shot=cap.read() 
         cv2.imshow("frame",shot)
-        count=0
+        
         k=cv2.waitKey(1)
         if  k==ord(" ")  : #space bar to get a screenshot
             pic=shot.copy()
@@ -38,101 +41,27 @@ def webcam():
       
         
     cap.release()
-   
-
 def create_mosaic():
-    # manually make mosaic after giving an input of pieces.
-    def manual():
-        global pieces ,my_image
-        pieces=simpledialog.askinteger("Input Pieces", "Enter the no. of Pieces")
-        print(pieces)
-        mosaicPiece = CT.getMosaic (pic, pieces)
-        img_gray=cv2.cvtColor(mosaicPiece,cv2.COLOR_BGR2GRAY)
+    global pic
+    def contour(pic):
+        
+        picture=pic.shape
+        print(picture)
+        width=pic.shape[1]
+        height=pic.shape[0]
+        new_mosaic=np.zeros((height,width,3),np.uint8)
+        imagearea=(width*height)
+        img_gray=cv2.cvtColor(pic,cv2.COLOR_BGR2GRAY)
         ret,thresh=cv2.threshold(img_gray,1,255,cv2.THRESH_BINARY)
         contours,hierarchy=cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
         for contour in contours:
             approx=cv2.approxPolyDP(contour, 0.01*cv2.arcLength(contour,True),True)
-            cv2.drawContours(mosaicPiece,[approx],0,(0,255,0),5)
+            #cv2.drawContours(pic,[approx],0,(0,255,0),5)
             area=cv2.contourArea(contour)
-        
-            if(area>100):
+            if(area>(imagearea/2500)):
                 M=cv2.moments(contour)
                 cx=int(M["m10"] / M["m00"])
                 cy=int(M["m01"] / M["m00"])
-                print(mosaicPiece[cy][cx])
-                b=int(mosaicPiece[cy][cx][0])
-                g=int(mosaicPiece[cy][cx][1])
-                r=int(mosaicPiece[cy][cx][2])
-                print(b)
-                print(g)
-                print(r)
-                cv2.fillPoly(mosaicPiece,pts=[contour],color=(b,g,r))
-        my_image=mosaicPiece.copy()        
-        cv2.namedWindow('original', cv2.WINDOW_NORMAL)        
-        cv2.imshow ('original', mosaicPiece)
-        
-    # Automatically create traingular Mosaic for selected image.
-    def triangular_mosaic():
-        global my_image
-        img_gray = cv2.cvtColor(pic, cv2.COLOR_BGR2GRAY)
-        ret, global_thresh = cv2.threshold(img_gray, 1, 255, cv2.THRESH_BINARY)
-        width = global_thresh.shape[1]
-        height = global_thresh.shape[0]
-        rect = (0, 0, width, height)
-        subdiv = cv2.Subdiv2D(rect)
-
-        # points on the inside
-
-        # selects 100 random points on the image
-        for i in range(0, 100):
-            randx = rd.randint(0, width)
-
-            randy = rd.randint(0, height)
-            subdiv.insert((randx, randy))
-
-        # edge points
-
-        # selects 10 random points on each side
-        for i in range(0, 10):
-            subdiv.insert((0, rd.randint(0, height)))
-            subdiv.insert((rd.randint(0, width), 0))
-            subdiv.insert((width-1, rd.randint(0, height)))
-            subdiv.insert((rd.randint(0, width), height-1))
-
-        # corners
-
-        subdiv.insert((0, 0))
-        subdiv.insert((0, height-1))
-        subdiv.insert((width-1, 0))
-        subdiv.insert((width-1, height-1))
-
-        triangleList = subdiv.getTriangleList()
-
-        for t in triangleList:
-            pt1 = (t[0], t[1])
-            pt2 = (t[2], t[3])
-            pt3 = (t[4], t[5])
-
-            # draws the triangles
-
-            cv2.line(global_thresh, pt1, pt2, (0, 0, 0), 5)
-            cv2.line(global_thresh, pt2, pt3, (0, 0, 0), 5)
-            cv2.line(global_thresh, pt1, pt3, (0, 0, 0), 5)
-
-        contours, hierarchy = cv2.findContours(global_thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-        for contour in contours:
-           
-            approx=cv2.approxPolyDP(contour, 0.01*cv2.arcLength(contour,True),True)
-            cv2.drawContours(pic,[approx],0,(0,0,0),2)
-            x = approx.ravel()[0]
-            y = approx.ravel()[1]
-          
-            area=cv2.contourArea(contour)
-            if(area>100):
-                M=cv2.moments(contour)
-                cx=int(M["m10"] / M["m00"])
-                cy=int(M["m01"] / M["m00"])
-                
                 print(pic[cy][cx])
                 b=int(pic[cy][cx][0])
                 g=int(pic[cy][cx][1])
@@ -140,11 +69,28 @@ def create_mosaic():
                 print(b)
                 print(g)
                 print(r)
-                cv2.fillPoly(pic,pts=[contour],color=(b,g,r))
-        my_image=pic.copy()        
-        cv2.namedWindow('original', cv2.WINDOW_NORMAL)
-        cv2.imshow('original', pic)
+                cv2.fillPoly(new_mosaic,pts=[contour],color=(b,g,r))
+        return new_mosaic
+
+    # manually make mosaic after giving an input of pieces.
+    def manual():
+        global pieces ,my_image ,pic
+        pieces=simpledialog.askinteger("Input Pieces", "Enter the no. of Pieces")
+        print(pieces)
+        mosaicPiece = CT.getMosaic (pic, pieces)
+        contours=contour(mosaicPiece)
+        my_image=mosaicPiece.copy()        
+        cv2.namedWindow('Mosaic Picture', cv2.WINDOW_NORMAL)        
+        cv2.imshow ('Mosaic Picture',contours)
         
+    # Automatically create traingular Mosaic for selected image.
+    def auto_mosaic():
+        global my_image,pic
+        mosaicPiece = CT.getMosaic (pic, 0)
+        contours=contour(mosaicPiece)
+        my_image=mosaicPiece.copy()        
+        cv2.namedWindow('Mosaic Picture', cv2.WINDOW_NORMAL)        
+        cv2.imshow ('Mosaic Picture', contours)
         
     top = Toplevel()
     canvas_new = tk.Canvas(top,height = 600,width = 600,bg = '#d71b3b') 
@@ -156,10 +102,10 @@ def create_mosaic():
     frame_new = tk.Frame(top,bg = '#e8d71e')
     frame_new.place(relx = 0.2,rely = 0.1,relwidth =0.6,relheight =0.6)
 
-    Mosaic_btn_manual = tk.Button(frame_new,text = 'Create The Mosaic Manually?',fg = 'navy',padx = 10,font=('Bauhaus 93',14),pady = 5, command = manual)
+    Mosaic_btn_manual = tk.Button(frame_new,text = 'Create Mosaic Manually?',fg = 'navy',padx = 10,font=('Bauhaus 93',14),pady = 5, command = manual)
     Mosaic_btn_manual.place(relx = 0.12, rely = 0.25)
 
-    Mosaic_btn_auto = tk.Button(frame_new,text = 'Create Triangular Mosaic Automatically?',fg = 'navy',padx = 10,font=('Bauhaus 93',14),pady = 5,command=triangular_mosaic)
+    Mosaic_btn_auto = tk.Button(frame_new,text = 'Create Mosaic Automatically?',fg = 'navy',padx = 10,font=('Bauhaus 93',14),pady = 5,command=auto_mosaic)
     Mosaic_btn_auto.place(relx = 0.05, rely = 0.55)
 
     label_new=tk.Label(frame_new,text = '--OR--',fg='#a9a9a9',bg='#e8d71e',font=('Bauhaus 93',22))
@@ -238,10 +184,12 @@ def showtext():
     text_frame = Text(textbox,bg = '#89cfef')
     text_frame.insert('2.0',content)
     text_frame.pack()
-count=0
+
 def save():
+    #filepath = filedialog.asksaveasfile(mode="w",defaultextension = ".jpg",initialdir = 'E:\\',title = 'Select an Image',filetypes = (('JPG','*.jpg'),('All files','*.*')))
+    #my_image.save(filepath)
     name=simpledialog.askstring("Save As", "please enter the name of the file")
-    cv2.imwrite(str(name)+'.jpg',my_image)
+    cv2.imwrite(filepath,my_image)
 
 
 def original():
@@ -294,7 +242,6 @@ Save_img_btn.place(relx = 0.85, rely = 0.4)
 
 exit_btn = tk.Button(canvas,text = 'Close (X)',fg = 'red',padx = 10,pady = 5,font=('Bauhaus 93',14), command = exit_app)
 exit_btn.place(relx = 0.8,rely = 0.1)
-
 
 root.mainloop()
 
