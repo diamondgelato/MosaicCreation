@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 import random as rd
 import sys
-sys.path.append('MosaicPieces')
+
 import ControlPieces as CT
 #used to save image
 my_image=np.zeros((),np.uint8)
@@ -21,13 +21,13 @@ def choose_file():
     global filepath, pic,my_image
     filepath = filedialog.askopenfilename(initialdir = 'E:\\',title = 'Select an Image',filetypes = (('JPG','*.jpg'),('All files','*.*')))
     pic = cv2.imread(filepath)
-    my_image=pic.copy()
+    my_image=np.copy(pic)
     cv2.namedWindow('original',cv2.WINDOW_NORMAL)
     cv2.imshow('original', pic)
 
 
 def webcam():
-    global shot ,my_image,pic
+    global my_image,pic
     cap=cv2.VideoCapture(0)
     while True:
         ret,shot=cap.read() 
@@ -35,7 +35,8 @@ def webcam():
         
         k=cv2.waitKey(1)
         if  k==ord(" ")  : #space bar to get a screenshot
-            pic=shot.copy()
+            pic=np.copy(pic)
+            my_image=np.copy(pic)
             cv2.imshow("frame",shot)
             break
       
@@ -44,7 +45,6 @@ def webcam():
 def create_mosaic():
     global pic
     def contour(pic):
-        
         picture=pic.shape
         print(picture)
         width=pic.shape[1]
@@ -56,7 +56,7 @@ def create_mosaic():
         contours,hierarchy=cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
         for contour in contours:
             approx=cv2.approxPolyDP(contour, 0.01*cv2.arcLength(contour,True),True)
-            #cv2.drawContours(pic,[approx],0,(0,255,0),5)
+            cv2.drawContours(pic,[approx],0,(0,255,0),5)
             area=cv2.contourArea(contour)
             if(area>(imagearea/2500)):
                 M=cv2.moments(contour)
@@ -74,21 +74,21 @@ def create_mosaic():
 
     # manually make mosaic after giving an input of pieces.
     def manual():
-        global pieces ,my_image ,pic
+        global pieces ,my_image 
         pieces=simpledialog.askinteger("Input Pieces", "Enter the no. of Pieces")
         print(pieces)
-        mosaicPiece = CT.getMosaic (pic, pieces)
+        mosaicPiece = CT.getMosaic (my_image, pieces)
         contours=contour(mosaicPiece)
-        my_image=mosaicPiece.copy()        
+        my_image=np.copy(contours)        
         cv2.namedWindow('Mosaic Picture', cv2.WINDOW_NORMAL)        
         cv2.imshow ('Mosaic Picture',contours)
         
     # Automatically create traingular Mosaic for selected image.
     def auto_mosaic():
-        global my_image,pic
-        mosaicPiece = CT.getMosaic (pic, 0)
+        global my_image
+        mosaicPiece = CT.getMosaic (my_image, 0)
         contours=contour(mosaicPiece)
-        my_image=mosaicPiece.copy()        
+        my_image=np.copy(contours)        
         cv2.namedWindow('Mosaic Picture', cv2.WINDOW_NORMAL)        
         cv2.imshow ('Mosaic Picture', contours)
         
@@ -120,6 +120,7 @@ def filters_list():
         global im_color2 ,my_image
         im_gray = cv2.cvtColor(pic, cv2.COLOR_BGR2GRAY)
         im_color2 = cv2.applyColorMap(im_gray,cv2.COLORMAP_BONE)
+        
         my_image=im_color2.copy()
         cv2.namedWindow('original',cv2.WINDOW_NORMAL)
         cv2.imshow('original',im_color2)
