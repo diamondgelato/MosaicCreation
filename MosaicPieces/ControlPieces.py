@@ -9,8 +9,8 @@ def getMosaic(pic, noOfPieces):
     dim = max(pic.shape[0], pic.shape[1])
     lineWt = int(3 * (dim/1000))
 
-    if lineWt == 0:
-        lineWt = 1
+    if lineWt < 2:
+        lineWt = 2
 
     # set number of points according to number of pieces input
     defaultInsidePts = 600
