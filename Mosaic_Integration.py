@@ -58,7 +58,7 @@ def create_mosaic():
             approx=cv2.approxPolyDP(contour, 0.01*cv2.arcLength(contour,True),True)
             #cv2.drawContours(pic,[approx],0,(0,255,0),5)
             area=cv2.contourArea(contour)
-            if(area>(imagearea/2500)):
+            if(area>(imagearea/20000)):
                 M=cv2.moments(contour)
                 cx=int(M["m10"] / M["m00"])
                 cy=int(M["m01"] / M["m00"])
