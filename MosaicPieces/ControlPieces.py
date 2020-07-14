@@ -7,10 +7,10 @@ def getMosaic(pic, noOfPieces):
 
     # decide lineWt based on dimensions
     dim = max(pic.shape[0], pic.shape[1])
-    lineWt = int(1.5 * (dim/1000))
+    lineWt = int(3 * (dim/1000))
 
-    if lineWt == 0:
-        lineWt = 1
+    if lineWt < 2:
+        lineWt = 2
 
     # set number of points according to number of pieces input
     defaultInsidePts = 600
@@ -37,7 +37,10 @@ def getMosaic(pic, noOfPieces):
            (750, 850, 500, 20),
            (850, 1000, 600, 20),
            (1000, 1250, 700, 20),
-           (1250, 1500, 800, 20),)
+           (1250, 1500, 800, 20),
+           (1500, 2070, 1000, 20),
+           (2070, 2870, 1400, 20),
+           (2870, 4000, 2000, 20))
 
     if noOfPieces == 0:
         mosaic = MAT.getMosaicPieces(
