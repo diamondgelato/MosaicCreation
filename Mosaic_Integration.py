@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 import random as rd
 import sys
-
+#sys.path.append ('MosaicPieces')
 import ControlPieces as CT
 #used to save image
 my_image=np.zeros((),np.uint8)
